@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Ph-lo/nuit_de_linfo#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "lorem-ipsum": "^2.0.4",
     "socket.io": "^4.4.0"
   },
   "devDependencies": {
