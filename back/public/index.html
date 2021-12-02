@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Jeu phaser.js socket.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="game.js"></script>
+  </head>
+  <body>
+    <form id="form">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      
+      // Handle URL redirect on form submit
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        window.location.href = (window.location.href.split('?')[0]) + `?q=${input.value}`;
+      });
+
+      // Handle game logic
+      const socket = io();
+
+      socket.on("connect", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q');
+        socket.emit('select_room', query);
+      });
+      socket.on("startGame", () => {
+          console.log('OK');
+      });
+    </script>
+  </body>
+</html>
