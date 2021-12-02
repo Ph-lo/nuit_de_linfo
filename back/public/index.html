@@ -9,26 +9,31 @@
     <script src="game.js"></script>
   </head>
   <body>
-    <form id="form" action="">
+    <form id="form">
       <input id="input" autocomplete="off" /><button>Send</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      var socket = io();
-      var form = document.getElementById("form");
-      var input = document.getElementById("input");
+      
+      // Handle URL redirect on form submit
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
       form.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (input.value) {
-          socket.emit("value", input.value);
-          input.value = "";
-        }
+        window.location.href = (window.location.href.split('?')[0]) + `?q=${input.value}`;
       });
 
-      socket.on("pong", function (pong) {
-          
-           
+      // Handle game logic
+      const socket = io();
+
+      socket.on("connect", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q');
+        socket.emit('select_room', query);
+      });
+      socket.on("startGame", () => {
+          console.log('OK');
       });
     </script>
   </body>
