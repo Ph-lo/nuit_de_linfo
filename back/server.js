@@ -9,6 +9,15 @@ const io = new Server(server);
 rooms = {};
 matches = {};
 
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+  }
+}
+
 function generateArticle(keyword) {
     let title = loremIpsum({
         count: 6,
@@ -24,8 +33,8 @@ function generateArticle(keyword) {
     const randNbr = Math.floor(Math.random() * 4) + 1;
     for(let i = 0; i < randNbr; i++)
         body_words.push(keyword);
-    title_words.sort(() => Math.random());
-    body_words.sort(() => Math.random() * 1);
+    shuffleArray(title_words);
+    shuffleArray(body_words);
     return {
         title: title_words.join(" ") + '.',
         body: body_words.join(" ") + '.'
