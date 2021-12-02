@@ -1,12 +1,18 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 8000;
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
-app.get("/cal", (req, res) => {
-  
-    console.log(req.params.calcul)
+app.get("/", (req, res) => {
+  res.send("api nuit de l'info");
 });
 
-app.listen(port, () => {
-  console.log("Server app listening on port " + port);
+io.on("connection", (socket) => {
+  console.log("a user connected");
+});
+
+server.listen(8000, () => {
+  console.log("listening localhost:8080");
 });
