@@ -11,34 +11,34 @@ matches = {};
 
 function shuffleArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
   }
 }
 
 function generateArticle(keyword) {
-    let title = loremIpsum({
-        count: 6,
-        units: "word",
-    }).toLowerCase();
-    const body = loremIpsum({
-        count: 4,
-        units: "sentence",
-    }).toLowerCase();
-    const title_words = title.split(" ");
-    title_words.push(keyword);
-    const body_words = body.split(" ");
-    const randNbr = Math.floor(Math.random() * 4) + 1;
-    for(let i = 0; i < randNbr; i++)
-        body_words.push(keyword);
-    shuffleArray(title_words);
-    shuffleArray(body_words);
-    return {
-        title: title_words.join(" ") + '.',
-        body: body_words.join(" ") + '.'
-    };    
+  let title = loremIpsum({
+    count: 6,
+    units: "word",
+  }).toLowerCase();
+  const body = loremIpsum({
+    count: 4,
+    units: "sentence",
+  }).toLowerCase();
+  const title_words = title.split(" ");
+  title_words.push(keyword);
+  const body_words = body.split(" ");
+  const randNbr = Math.floor(Math.random() * 4) + 1;
+  for (let i = 0; i < randNbr; i++)
+    body_words.push(keyword);
+  shuffleArray(title_words);
+  shuffleArray(body_words);
+  return {
+    title: title_words.join(" ") + '.',
+    body: body_words.join(" ") + '.'
+  };
 }
 
 app.use(express.static(__dirname + '/public'));
@@ -50,13 +50,13 @@ io.on("connection", (socket) => {
     for (let i = 0; i < 8; i++) {
       articles.push(generateArticle(roomName));
     }
-    socket.emit("search_results", JSON.stringify({articles}));
+    socket.emit("search_results", JSON.stringify({ articles }));
     if (rooms[roomName] !== undefined && rooms[roomName].connected) {
       matches[socket.id] = rooms[roomName];
       matches[rooms[roomName].id] = socket;
-      socket.emit('startGame');
-      rooms[roomName].emit('startGame');
-      delete rooms[roomName]; 
+      socket.emit('startGame', 1);
+      rooms[roomName].emit('startGame', 2);
+      delete rooms[roomName];
     } else {
       rooms[roomName] = socket;
     }
@@ -69,8 +69,13 @@ io.on("connection", (socket) => {
     }
     console.log(`user disconnected ${socket.id}`);
   });
+  socket.on("player_position", (position) => {
+    if (matches[socket.id]) {
+      matches[socket.id].emit('enemy_position', position);
+    }
+  });
 });
 
-server.listen(8080, () => {
+server.listen(8080, '0.0.0.0', () => {
   console.log("listening localhost:8080");
 });
