@@ -80,7 +80,7 @@ window.onload = () => {
     });
     socket.on("float_position", (positionRaw) => {
         const position = JSON.parse(positionRaw);
-        float.x = position.x; 
+        float.x = position.x;
         float.y = position.y;
     });
 };

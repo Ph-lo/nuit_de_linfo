@@ -54,7 +54,13 @@ io.on("connection", (socket) => {
     socket.emit("search_results", JSON.stringify({ articles }));
     if (rooms[roomName] !== undefined && rooms[roomName].connected) {
       const v4 = uuidv4();
-      matches[v4] = { p1: socket, p2: rooms[roomName], float: { x: 540, y: 360 }, p1Score: 0, p2Score: 0 };
+      matches[v4] = { p1: socket, p2: rooms[roomName], float: { x: 540, y: 360 }, intervalId: 0, vector: { x: 10, y: 10}, p1Score: 0, p2Score: 0 };
+      matches[v4].intervalId = setInterval(() => {
+        matches[v4].float.x += matches[v4].vector.x;
+        matches[v4].float.y += matches[v4].vector.y;
+        matches[v4].p1.emit('float_position', JSON.stringify({ x: matches[v4].float.x, y: matches[v4].float.y}));  
+        matches[v4].p2.emit('float_position', JSON.stringify({ x: matches[v4].float.x, y: matches[v4].float.y}));  
+      }, 100);
       socket.emit('start_game', JSON.stringify({ position: 1, id: v4 }));
       rooms[roomName].emit('start_game', JSON.stringify({ position: 2, id: v4 }));
       delete rooms[roomName];
