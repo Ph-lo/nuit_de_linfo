@@ -16,15 +16,18 @@ let game;
 let playerNum;
 let p1;
 let p2;
+let text;
 let float;
+let floatVec;
 let player;
 let ennemie;
 let socket;
+let lock = false;
 
-// playerNum = 1;
-// config.canvas = document.getElementById('canvas');
-// config.canvas.style.display = "block";
-// game = new Phaser.Game(config);
+playerNum = 1;
+config.canvas = document.getElementById('canvas');
+config.canvas.style.display = "block";
+game = new Phaser.Game(config);
 
 function generateArticles(articles) {
     const articlesDiv = document.getElementById("articles");
@@ -79,9 +82,17 @@ window.onload = () => {
         }
     });
     socket.on("float_position", (positionRaw) => {
-        const position = JSON.parse(positionRaw);
+        const { position, vector } = JSON.parse(positionRaw);
         float.x = position.x;
         float.y = position.y;
+        floatVec = vector;
+    });
+    socket.on("score", (dataRaw) => {
+        lock = false;
+        const { p1, p2 } = JSON.parse(dataRaw);
+        text.setText(
+            `${p1} - ${p2}`
+        );
     });
 };
 
@@ -98,8 +109,14 @@ function create() {
     const scaleY = this.cameras.main.height / image.height
     const scale = Math.max(scaleX, scaleY)
     image.setScale(scale).setScrollFactor(0)
-    
-    this.isOutWorldBounds = (object) => (object.getBounds().bottom > game.config.height || object.getBounds().top < 0);
+
+    this.isOutWorldBoundsVerti = (object) => (object.getBounds().bottom > game.config.height || object.getBounds().top < 0);
+    this.isOutWorldBoundsHori = (object) => (object.getBounds().right < 0 || object.getBounds().left > WIDTH);
+    this.checkOverlap = (spriteA, spriteB) => {
+	    var boundsA = spriteA.getBounds();
+	    var boundsB = spriteB.getBounds();
+	    return Phaser.Geom.Intersects.RectangleToRectangle(boundsA, boundsB);
+	}
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     float = this.add.sprite(WIDTH / 2, HEIGTH / 2, 'float');
@@ -112,6 +129,8 @@ function create() {
         player = p2;
         enemy = p1;
     }
+    const style = { font: "bold 32px Arial", fill: "#000" };
+    text = this.add.text(WIDTH / 2 - 30, HEIGTH / 5, "0 - 0", style);
 }
 
 function update() {
@@ -122,7 +141,7 @@ function update() {
     if (this.down.isDown) {
         player.y += 4;
     }
-    if (this.isOutWorldBounds(player)) {
+    if (this.isOutWorldBoundsVerti(player)) {
         player.y = before;
     }
     if (before > player.y) {
@@ -130,5 +149,20 @@ function update() {
     } else if (before < player.y) {
         player.angle = 180;
     }
-    socket.emit('player_position', JSON.stringify({player: playerNum, position: player.y, id: gameId}));
+    if (playerNum === 1) {
+        if (this.isOutWorldBoundsVerti(float)) {
+            socket.emit('float_vec', JSON.stringify({ id: gameId, x: floatVec.x, y: -floatVec.y }));
+        }
+        if (this.isOutWorldBoundsHori(float) && lock === false) {
+            lock = true;
+            if (float.getBounds().right < 0)
+                socket.emit('score', JSON.stringify({ id: gameId, player: 2 }));
+            else
+                socket.emit('score', JSON.stringify({ id: gameId, player: 1 }));
+        }
+        if (this.checkOverlap(float, p1) || this.checkOverlap(float, p2)) {
+            socket.emit('float_vec', JSON.stringify({ id: gameId, x: -floatVec.x + Math.floor(Math.random() * 30) - 15, y: -floatVec.y + Math.floor(Math.random() * 30) - 15}));
+        }
+    }
+    socket.emit('player_position', JSON.stringify({ player: playerNum, position: player.y, id: gameId }));
 }
