@@ -1,0 +1,183 @@
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+    background-image: url(./assets/Background@2x.png);
+    flex-direction: column;
+}
+    
+    .title{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 32px;
+}
+
+#navbarNavDropdown{
+    display: flex;
+    justify-content: center;
+}
+
+img.logo {
+    height: 131px;
+    width: 134px;
+}
+
+.row{
+    display: flex;
+    height: 455px;
+    width: 1440px;
+}
+
+div.container-fluid.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 88px;
+
+}
+
+.divButton3 {
+    width: 670px;
+}
+
+.divButton2{
+    display: flex;
+    justify-content: flex-end;
+    width: 612px;
+}
+.divButton{
+    width: 670px;
+}
+
+div.col {
+    display: flex;
+    height: 455px;
+    width: 1440px;
+}
+
+
+.float {
+    display: flex;
+    justify-content: space-between;
+    padding: 58px;
+}
+
+
+img.illustration {
+    height: 376px;
+    width: 461px;
+}
+
+.illustration_assets {
+    height: 376px;
+    width: 461px;
+}
+
+img.group{
+    height: 455px;
+    width: 471px;
+}
+.group_assets {
+    height: 455px;
+    width: 471px;
+}
+
+img.beach {
+    height: 504px;
+    width: 501px;
+}
+
+.beach_assets {
+    height: 504px;
+    width: 501px;
+}
+
+img.floatfloatfloat {
+    height: 290px;
+    width: 290px;
+}
+
+.full_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h2 {
+    display: flex;
+    justify-content: flex-start;
+    color: rgb(1, 158, 165);
+    font-family: Montserrat-Bold;
+    font-size: 24px;
+    font-weight: bold;
+    height: 30px;
+    letter-spacing: 0.11px;
+    line-height: 30px;
+    width: 300px;
+} 
+
+.buton1 {
+    background: linear-gradient(0deg, rgb(0, 189, 145) 0%, rgb(0, 155, 164) 100%);
+    border-radius: 24px;
+    height: 48px;
+    width: 150px;
+    border-color: rgb(0, 189, 145);
+}
+
+.buton2 {
+    background: linear-gradient(0deg, rgb(0, 189, 145) 0%, rgb(0, 155, 164) 100%);
+    border-radius: 24px;
+    height: 48px;
+    width: 150px;
+    border-color: rgb(0, 189, 145);
+}
+
+.buton3 {
+    background: linear-gradient(0deg, rgb(0, 189, 145) 0%, rgb(0, 155, 164) 100%);
+    border-radius: 24px;
+    height: 48px;
+    width: 150px;
+    border-color: rgb(0, 189, 145);
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.float.row  {
+    display: flex;
+    justify-content: center;
+    justify-content: space-between;
+}
+
+#float_row_center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.search_button {
+    position:relative;
+    width:1040px;
+    height:auto;}
+
+.formulaire{
+    display:inline-block;
+}
+.formulaire .champ{
+    width:600px;
+    height:35px;
+}
+.formulaire .search_button{
+    background-image: url(assets/Shape.svg);
+    background-repeat: no-repeat;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+}
+    
