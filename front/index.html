@@ -1,26 +1,176 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Jeu phaser.js socket.js</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-    <script src='game.js'></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-         var socket = io();
-    </script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-  
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </head>
+
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img class="logo" src="./assets/Logo.svg" alt="logo">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Sauvetage
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Sauveteurs</a>
+                        <a class="dropdown-item" href="#">Sorties en mer</a>
+                        <a class="dropdown-item" href="#">Moyens maritimes</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Stations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Dunkerque</a>
+                        <a class="dropdown-item" href="#">Gravelines</a>
+                        <a class="dropdown-item" href="#">Fort-Mardyck</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Services du port
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Douanes</a>
+                        <a class="dropdown-item" href="#">Lamanage</a>
+                        <a class="dropdown-item" href="#">Pilotage</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Techniques
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Matériels</a>
+                        <a class="dropdown-item" href="#">Sauvetage des personnes</a>
+                        <a class="dropdown-item" href="#">Va-et-vient</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Historique
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Ephéméride du sauvetage</a>
+                        <a class="dropdown-item" href="#">40 ans de société humaine</a>
+                        <a class="dropdown-item" href="#">SCSN</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        Compléments
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="#">Art et sauvetage</a>
+                        <a class="dropdown-item" href="#">Bibliographie</a>
+                        <a class="dropdown-item" href="#">Galerie photo</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="header">
+        <p class="title">Toutes les informations sur les sauveteurs, les<br> personnes sauvées, les bateaux
+            sauveteurs
+            ou <br>secourus sont ici :</p>
+        <div class="search_bar">
+            <form class="formulaire" action="/search.html">
+                <input class="champ" name="q" type="text" placeholder="search...">
+                <input class="search_button" type="submit" value=" ">
+            </form>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="container-fluid row">
+            <div class="col">
+                <div class="beach_assets">
+                    <img class="beach" src="./assets/beach.svg" alt="beach">
+                </div>
+            </div>
+            <div class="col">
+                <div class="full_content">
+                    <h2>Les sauveteurs</h2>
+                    <p>Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone
+                        mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl.</p>
+                    <div class="divButton">
+                        <button class="buton1">En savoir +</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="container-fluid row">
+            <div class="col">
+                <div class="full_content">
+                    <h2>Les sorties</h2>
+                    <p>Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone
+                        mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl.</p>
+                    <div class="divButton2">
+                        <button class="buton2">En savoir +</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="group_assets">
+                    <img class="group" src="./assets/Group.svg" alt="Group">
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid row">
+            <div class="col">
+                <div class="illustration_assets">
+                    <img class="illustration" src="./assets/illustration.svg" alt="illustration">
+                </div>
+            </div>
+            <div class="col">
+                <div class="full_content">
+                    <h2>Les Bateaux</h2>
+                    <p>Prow scuttle parrel provost Sail ho shrouds spirits boom mizzenmast yardarm. Pinnace holystone
+                        mizzenmast quarter crow's nest nipperkin grog yardarm hempen halter furl.</p>
+                    <div class="divButton3">
+                        <button class="buton3">En savoir +</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h1>Actualité</h1>
+    <div class="container-fluid" id="float_row_center">
+        <div class="float row">
+            <img class="floatfloatfloat" src="assets/Asset-journal.svg" alt="journal1">
+            <img class="floatfloatfloat" src="assets/Asset-journal.svg" alt="journal2">
+            <img class="floatfloatfloat" src="assets/Asset-journal.svg" alt="journal3">
+        </div>
+    </div>
+    <div class="footers">
+        <h3>Restez en contact<br> Sur les réseaux sociaux</h3>
+    </div>
 </body>
+
 </html>
