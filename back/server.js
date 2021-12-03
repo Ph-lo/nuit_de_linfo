@@ -1,4 +1,5 @@
 const loremIpsum = require("lorem-ipsum").loremIpsum;
+const { v4: uuidv4 } = require('uuid');
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -52,26 +53,26 @@ io.on("connection", (socket) => {
     }
     socket.emit("search_results", JSON.stringify({ articles }));
     if (rooms[roomName] !== undefined && rooms[roomName].connected) {
-      matches[socket.id] = rooms[roomName];
-      matches[rooms[roomName].id] = socket;
-      socket.emit('startGame', 1);
-      rooms[roomName].emit('startGame', 2);
+      const v4 = uuidv4();
+      matches[v4] = { p1: socket, p2: rooms[roomName], float: { x: 540, y: 360 }, p1Score: 0, p2Score: 0 };
+      socket.emit('start_game', JSON.stringify({ position: 1, id: v4 }));
+      rooms[roomName].emit('start_game', JSON.stringify({ position: 2, id: v4 }));
       delete rooms[roomName];
     } else {
       rooms[roomName] = socket;
     }
   });
   socket.on("disconnect", () => {
-    if (matches[socket.id]) {
-      matches[socket.id].emit('surrend');
-      delete matches[matches[socket.id].id];
-      delete matches[socket.id];
-    }
     console.log(`user disconnected ${socket.id}`);
   });
-  socket.on("player_position", (position) => {
-    if (matches[socket.id]) {
-      matches[socket.id].emit('enemy_position', position);
+  socket.on("player_position", (dataRaw) => {
+    data = JSON.parse(dataRaw);
+    if (matches[data.id]) {
+      if (data.player === 1) {
+        matches[data.id].p2.emit('enemy_position', data.position);
+      } else {
+        matches[data.id].p1.emit('enemy_position', data.position);
+      }
     }
   });
 });

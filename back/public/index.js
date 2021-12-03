@@ -11,6 +11,7 @@ const config = {
     }
 }
 
+let gameId;
 let game;
 let playerNum;
 let p1;
@@ -59,9 +60,11 @@ window.onload = () => {
         const data = JSON.parse(results);
         generateArticles(data.articles);
     });
-    socket.on("startGame", (position) => {
-        console.log(`Game Start as ${position}`);
-        playerNum = position;
+    socket.on("start_game", (dataRaw) => {
+        const data = JSON.parse(dataRaw);
+        console.log(`Game Start as ${data.position}`);
+        playerNum = data.position;
+        gameId = data.id;
         config.canvas = document.getElementById('canvas');
         config.canvas.style.display = "block";
         game = new Phaser.Game(config);
@@ -75,7 +78,11 @@ window.onload = () => {
             enemy.angle = 180;
         }
     });
-
+    socket.on("float_position", (positionRaw) => {
+        const position = JSON.parse(positionRaw);
+        float.x = position.x; 
+        float.y = position.y;
+    });
 };
 
 function preload() {
@@ -123,5 +130,5 @@ function update() {
     } else if (before < player.y) {
         player.angle = 180;
     }
-    socket.emit('player_position', player.y);
+    socket.emit('player_position', JSON.stringify({player: playerNum, position: player.y, id: gameId}));
 }
