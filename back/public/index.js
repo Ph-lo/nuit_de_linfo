@@ -24,10 +24,19 @@ let ennemie;
 let socket;
 let lock = false;
 
-playerNum = 1;
-config.canvas = document.getElementById('canvas');
-config.canvas.style.display = "block";
-game = new Phaser.Game(config);
+// playerNum = 1;
+// config.canvas = document.getElementById('canvas');
+// config.canvas.style.display = "block";
+// game = new Phaser.Game(config);
+const rotateVector = (vec, ang) => {
+    ang = -ang * (Math.PI / 180);
+    var cos = Math.cos(ang);
+    var sin = Math.sin(ang);
+    return { x: Math.round(10000 * (vec.x * cos - vec.y * sin)) / 10000, y: Math.round(10000 * (vec.x * sin + vec.y * cos)) / 10000};
+};
+const randomIntFromInterval = (min, max) => { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 function generateArticles(articles) {
     const articlesDiv = document.getElementById("articles");
@@ -88,12 +97,15 @@ window.onload = () => {
         floatVec = vector;
     });
     socket.on("score", (dataRaw) => {
-        lock = false;
         const { p1, p2 } = JSON.parse(dataRaw);
         text.setText(
             `${p1} - ${p2}`
         );
     });
+    socket.on("reset", () => {
+        lock = false;
+    });
+
 };
 
 function preload() {
@@ -113,10 +125,10 @@ function create() {
     this.isOutWorldBoundsVerti = (object) => (object.getBounds().bottom > game.config.height || object.getBounds().top < 0);
     this.isOutWorldBoundsHori = (object) => (object.getBounds().right < 0 || object.getBounds().left > WIDTH);
     this.checkOverlap = (spriteA, spriteB) => {
-	    var boundsA = spriteA.getBounds();
-	    var boundsB = spriteB.getBounds();
-	    return Phaser.Geom.Intersects.RectangleToRectangle(boundsA, boundsB);
-	}
+        var boundsA = spriteA.getBounds();
+        var boundsB = spriteB.getBounds();
+        return Phaser.Geom.Intersects.RectangleToRectangle(boundsA, boundsB);
+    }
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     float = this.add.sprite(WIDTH / 2, HEIGTH / 2, 'float');
@@ -161,7 +173,9 @@ function update() {
                 socket.emit('score', JSON.stringify({ id: gameId, player: 1 }));
         }
         if (this.checkOverlap(float, p1) || this.checkOverlap(float, p2)) {
-            socket.emit('float_vec', JSON.stringify({ id: gameId, x: -floatVec.x + Math.floor(Math.random() * 30) - 15, y: -floatVec.y + Math.floor(Math.random() * 30) - 15}));
+            const vec = rotateVector({  x: -floatVec.x, y: -floatVec.y }, randomIntFromInterval(-30, 30));
+            socket.emit('float_vec', JSON.stringify({id: gameId, ...vec}));
+
         }
     }
     socket.emit('player_position', JSON.stringify({ player: playerNum, position: player.y, id: gameId }));

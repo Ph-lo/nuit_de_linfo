@@ -95,6 +95,7 @@ io.on("connection", (socket) => {
     matches[data.id].p1.emit('score', JSON.stringify({p1: matches[data.id].p1Score, p2: matches[data.id].p2Score}));
     matches[data.id].float = { x: 540, y: 360 };
     matches[data.id].vector = { x: 20, y: 20};
+    matches[data.id].p1.emit('reset');
     lock = false; 
   });
   socket.on("float_vec", (dataRaw) => {
