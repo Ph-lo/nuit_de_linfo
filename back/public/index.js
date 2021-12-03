@@ -1,5 +1,5 @@
-const WIDTH = 1440;
-const HEIGTH = 1024;
+const WIDTH = 1080;
+const HEIGTH = 720;
 const config = {
     type: Phaser.CANVAS,
     width: WIDTH,
@@ -15,12 +15,15 @@ let game;
 let playerNum;
 let p1;
 let p2;
+let float;
 let player;
 let ennemie;
 let socket;
 
-config.canvas = document.getElementById('canvas');
-game = new Phaser.Game(config);
+// playerNum = 1;
+// config.canvas = document.getElementById('canvas');
+// config.canvas.style.display = "block";
+// game = new Phaser.Game(config);
 
 function generateArticles(articles) {
     const articlesDiv = document.getElementById("articles");
@@ -60,6 +63,7 @@ window.onload = () => {
         console.log(`Game Start as ${position}`);
         playerNum = position;
         config.canvas = document.getElementById('canvas');
+        config.canvas.style.display = "block";
         game = new Phaser.Game(config);
     });
     socket.on("enemy_position", (position) => {
@@ -75,20 +79,28 @@ window.onload = () => {
 };
 
 function preload() {
+    this.load.image('background', 'assets/background.png');
     this.load.image('boat', 'assets/boat.png');
     this.load.image('float', 'assets/float.png');
     this.input.keyboard.addCapture('UP,DOWN');
 }
 
 function create() {
+    const image = this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'background')
+    const scaleX = this.cameras.main.width / image.width
+    const scaleY = this.cameras.main.height / image.height
+    const scale = Math.max(scaleX, scaleY)
+    image.setScale(scale).setScrollFactor(0)
+    
     this.isOutWorldBounds = (object) => (object.getBounds().bottom > game.config.height || object.getBounds().top < 0);
     this.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
     this.down = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+    float = this.add.sprite(WIDTH / 2, HEIGTH / 2, 'float');
     p1 = this.add.sprite(150, 200, 'boat');
     p2 = this.add.sprite(WIDTH - 170, 200, 'boat');
-    if (playerNum == 1) { 
+    if (playerNum == 1) {
         player = p1;
-        enemy = p2; 
+        enemy = p2;
     } else {
         player = p2;
         enemy = p1;
